@@ -27,11 +27,11 @@ client.on('ready', async () => {
         // Note that you can overwrite a command as well by using
         // the same name as the command file name.
         disabledDefaultCommands: [
-            // 'help',
-            // 'command',
-            // 'language',
-            // 'prefix',
-            // 'requiredrole'
+            'help',
+            'command',
+            'language',
+            'prefix',
+            'requiredrole'
         ]
     })
         // Here are some additional methods that you can chain
@@ -40,7 +40,7 @@ client.on('ready', async () => {
         // use them:
 
         // The default is !
-        .setDefaultPrefix('-')
+        .setDefaultPrefix(process.env.COMMAND_PREFIX)
 })
 
 client.login(process.env.DISCORD_BOT_TOKEN)
