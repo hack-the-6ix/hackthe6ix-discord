@@ -8,4 +8,4 @@ Populate all the values in `.env.template` and save it to a file called `.env`. 
 
 You will also need to configure any mappings you want for backend -> Discord roles. See `data/rolesmap.json.template` for an example. Note that you can specify arbitrary roles on the backend so you are not limited just by the backend permissions roles.
 
-Before you run the bot, you must invite it to your guild, with the `bot` and `applications.commands` grants.
+Before you run the bot, you must invite it to your guild with the `bot` and `applications.commands` grants.
