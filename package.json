@@ -1,0 +1,18 @@
+{
+  "name": "hackthe6ix-discord",
+  "version": "1.0.0",
+  "description": "Discord bot companion for the Hack the 6ix backend.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David Hui <opensource@davidhui.ca>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "discord.js": "^12.5.3",
+    "dotenv": "^10.0.0",
+    "mongoose": "^5.13.2",
+    "wokcommands": "^1.3.6"
+  }
+}
