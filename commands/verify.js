@@ -1,18 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const UserController = require('../controllers/UserController');
+const util = require('../util');
 
 const rolesMap = JSON.parse(fs.readFileSync(path.join("data", "rolesmap.json")).toString())
-
-function handleReturn (isSlash, message, reply) {
-    if(isSlash){
-        return reply;
-    }
-    else {
-        message.reply(reply);
-        return reply;
-    }
-}
 
 module.exports = {
     slash: 'both',
@@ -61,11 +52,11 @@ module.exports = {
                 await discordUser.setNickname(`${verifyData.firstName} ${verifyData.lastName}`);
             }
 
-            return handleReturn(isSlash, message, "Successfully verified!");
+            return util.handleReturn(isSlash, message, "Successfully verified!");
         }
         catch (e) {
             console.log(e);
-            return handleReturn(isSlash, message, e.message ?? 'There was an error verifying you. Please contact an organizer.');
+            return util.handleReturn(isSlash, message, e.publicMessage ?? 'There was an error verifying you. Please contact an organizer.');
         }
     }
 }

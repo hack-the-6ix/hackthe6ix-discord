@@ -2,6 +2,8 @@ require('dotenv').config();
 const discord = require('discord.js');
 const WOKCommands = require('wokcommands');
 
+const WatchController = require('./controllers/WatchController');
+
 const client = new discord.Client({
     // Use recommended partials for the built-in help menu
     partials: ['MESSAGE', 'REACTION']
@@ -42,5 +44,9 @@ client.on('ready', async () => {
         // The default is !
         .setDefaultPrefix(process.env.COMMAND_PREFIX)
 })
+
+client.on('voiceStateUpdate', (oldMember, newMember) => {
+    WatchController.handleEvent(oldMember, newMember);
+ })
 
 client.login(process.env.DISCORD_BOT_TOKEN)
