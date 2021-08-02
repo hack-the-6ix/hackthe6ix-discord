@@ -36,7 +36,6 @@ jobs:
           tags: hackthe6ix/${{ secrets.DOCKERHUB_REPOSITORY }}:latest
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
           cache-from: type=local,src=/tmp/.buildx-cache
-          target: deploy
           push: true
 
       # Clean up cache
