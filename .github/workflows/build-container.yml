@@ -52,3 +52,4 @@ jobs:
           inputs: '{ "tag": "latest", "dockerrepo": "${{ secrets.DOCKERHUB_REPOSITORY }}" }'
           repo: ${{ github.event.repository.name }}
           owner: hack-the-6ix
+          ref: master
