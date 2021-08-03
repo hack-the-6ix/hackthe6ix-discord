@@ -31,6 +31,10 @@ module.exports = {
         }
 
         try {
+            if(discordUser.roles.cache.has(process.env.VERIFIED_ROLE)){
+                return await util.handleReturn(isSlash, message, discordUser, "You have already verified!");
+            }
+
             const verifyData = await UserController.verifyUser(email, userID, `${discordUser.user.username}#${discordUser.user.discriminator}`);
 
             for(const role of verifyData.roles){
@@ -52,11 +56,11 @@ module.exports = {
                 await discordUser.setNickname(`${verifyData.firstName} ${verifyData.lastName}`);
             }
 
-            return util.handleReturn(isSlash, message, "Successfully verified!");
+            return await util.handleReturn(isSlash, message, discordUser, "Successfully verified!");
         }
         catch (e) {
             console.log(e);
-            return util.handleReturn(isSlash, message, e.publicMessage ?? 'There was an error verifying you. Please contact an organizer.');
+            return await util.handleReturn(isSlash, message, discordUser, e.publicMessage ?? 'There was an error verifying you. Please contact an organizer.');
         }
     }
 }

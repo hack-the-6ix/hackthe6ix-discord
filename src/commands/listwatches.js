@@ -13,10 +13,10 @@ module.exports = {
         const [userID, discordUser, isSlash] = await util.getCommandMetadata(member, message, channel);
 
         if(util.isUserAdmin(discordUser)){
-            return util.handleReturn(isSlash, message, jutil.inspect(WatchController.getWatches()));
+            return await util.handleReturn(isSlash, message, discordUser, jutil.inspect(WatchController.getWatches()));
         }
         else {
-            return util.handleReturn(isSlash, message, "This command is only available to organizers.");
+            return await util.handleReturn(isSlash, message, discordUser, "This command is only available to organizers.");
         }
     }
 }
