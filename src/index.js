@@ -3,6 +3,7 @@ const discord = require('discord.js');
 const WOKCommands = require('wokcommands');
 
 const WatchController = require('./controllers/WatchController');
+const util = require('./util');
 
 const client = new discord.Client({
     // Use recommended partials for the built-in help menu
@@ -48,5 +49,18 @@ client.on('ready', async () => {
 client.on('voiceStateUpdate', (oldMember, newMember) => {
     WatchController.handleEvent(oldMember, newMember);
  })
+
+client.on('message', (message) => {
+    if(message.channel.id === process.env.VERIFICATION_CHANNEL_ID){
+        if(message.author.id === client.user.id){
+            return;
+        }
+
+        if(util.isUserAdmin(message.member)){
+            return;
+        }
+        message.delete();
+    }
+})
 
 client.login(process.env.DISCORD_BOT_TOKEN)

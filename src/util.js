@@ -1,16 +1,30 @@
+const ADMIN_ROLES = process.env.ADMIN_ROLE_IDS.split(",");
 module.exports = {
     createHeaders() {
         return {
             'x-api-token': process.env.API_TOKEN
         }
     },
-    handleReturn (isSlash, message, reply) {
+    async handleReturn (isSlash, message, discordUser, reply, isError=false) {
         if(isSlash){
+            if(isError){
+                try {
+                    await discordUser.send(reply);
+                    return "There was an error. Please check your DMs for more information."
+                }
+                catch(err){
+                    return reply;
+                }
+            }
             return reply;
         }
         else {
-            message.reply(reply);
-            return reply;
+            try {
+                await discordUser.send(reply);
+            }
+            catch(ignored){
+                
+            }
         }
     },
     async getCommandMetadata(member, message, channel) {
@@ -32,6 +46,15 @@ module.exports = {
         return [userID, discordUser, isSlash];
     },
     isUserAdmin(discordUser) {
-        return discordUser.hasPermission("ADMINISTRATOR") || discordUser.roles.cache.has(process.env.ORGANIZER_ROLE_ID);
+        if(discordUser.hasPermission("ADMINISTRATOR")){
+            return true;
+        }
+
+        for(const role of ADMIN_ROLES){
+            if(discordUser.roles.cache.has(role)){
+                return true;
+            }
+        }
+        return false;
     }
 }
