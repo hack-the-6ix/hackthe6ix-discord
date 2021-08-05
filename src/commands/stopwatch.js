@@ -40,7 +40,9 @@ module.exports = {
         }
         else {
             return await util.handleReturn(isSlash, message, discordUser, "This command is only available to organizers.");
-        }
-        
+        }   
+    },
+    error: async (data) => {
+        await handleCommandError(data);
     }
 }

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const UserController = require('../controllers/UserController');
+const { handleCommandError } = require('../util');
 const util = require('../util');
 
 const rolesMap = JSON.parse(fs.readFileSync(path.join("data", "rolesmap.json")).toString())
@@ -51,5 +52,8 @@ module.exports = {
             console.log(e);
             return await util.handleReturn(isSlash, message, discordUser, e.publicMessage ?? 'There was an error verifying you. Please contact an organizer.');
         }
+    },
+    error: async (data) => {
+        await handleCommandError(data);
     }
 }
