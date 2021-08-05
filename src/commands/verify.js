@@ -6,8 +6,7 @@ const util = require('../util');
 const rolesMap = JSON.parse(fs.readFileSync(path.join("data", "rolesmap.json")).toString())
 
 module.exports = {
-    slash: 'both',
-    testOnly: true,
+    guildOnly: true,
     description: 'Verify yourself and associate your Discord account with your Hack the 6ix account.',
     minArgs: 1,
     expectedArgs: '<email>',
@@ -15,23 +14,13 @@ module.exports = {
     callback: async ({ args, text, message, member, channel, client }) => {
         const [email] = args;
 
-        let userID;
-        let discordUser;
-        let isSlash;
-
-        if(message){
-            userID = message.member.id;
-            discordUser = message.member;
-            isSlash = false;
-        }
-        else {
-            userID = member.user.id;
-            discordUser = await channel.guild.members.fetch(userID);
-            isSlash = true;
-        }
+        const [userID, discordUser, isSlash] = await util.getCommandMetadata(member, message, channel);
 
         try {
-            if(discordUser.roles.cache.has(process.env.VERIFIED_ROLE)){
+            if(message.channel.id !== process.env.VERIFICATION_CHANNEL_ID){
+                return await util.handleReturn(isSlash, message, discordUser, "You may only verify in the verification channel!");
+            }
+            if(discordUser.roles.cache.has(process.env.VERIFIED_ROLE_ID)){
                 return await util.handleReturn(isSlash, message, discordUser, "You have already verified!");
             }
 

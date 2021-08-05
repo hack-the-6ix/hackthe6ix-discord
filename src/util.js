@@ -22,8 +22,8 @@ module.exports = {
             try {
                 await discordUser.send(reply);
             }
-            catch(err){
-                return reply;
+            catch(ignored){
+                
             }
         }
     },

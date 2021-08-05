@@ -3,8 +3,6 @@ const util = require('../util');
 const WatchController = require('../controllers/WatchController');
 
 module.exports = {
-    slash: 'both',
-    testOnly: true,
     guildOnly: true,
     description: 'Stops a meeting watch.',
     minArgs: 0,

@@ -4,8 +4,6 @@ const MeetingController = require('../controllers/MeetingController');
 const WatchController = require('../controllers/WatchController');
 
 module.exports = {
-    slash: 'both',
-    testOnly: true,
     guildOnly: true,
     description: 'Start a watch for meeting stastics.',
     minArgs: 1,

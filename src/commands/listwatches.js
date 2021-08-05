@@ -4,8 +4,6 @@ const jutil = require('util');
 const WatchController = require('../controllers/WatchController');
 
 module.exports = {
-    slash: 'both',
-    testOnly: true,
     guildOnly: true,
     description: 'Lists all active meeting watches.',
     category: 'Organizer',
