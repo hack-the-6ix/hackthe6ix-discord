@@ -26,6 +26,13 @@ module.exports = {
             }
 
             const verifyData = await UserController.verifyUser(email, userID, `${discordUser.user.username}#${discordUser.user.discriminator}`);
+            
+            try {
+                await discordUser.roles.add(process.env.VERIFIED_ROLE_ID);
+            }
+            catch(ignored){
+                
+            }
 
             for(const role of verifyData.roles){
                 try {
