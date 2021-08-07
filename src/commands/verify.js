@@ -13,7 +13,7 @@ module.exports = {
     expectedArgs: '<email>',
     category: 'Setup',
     callback: async ({ args, text, message, member, channel, client }) => {
-        let [email] = args;
+        let email = args[0] || args[args.length-1];
         email = email.trim();
 
         const [userID, discordUser, isSlash] = await util.getCommandMetadata(member, message, channel);
@@ -25,7 +25,7 @@ module.exports = {
             if(discordUser.roles.cache.has(process.env.VERIFIED_ROLE_ID)){
                 return await util.handleReturn(isSlash, message, discordUser, "You have already verified!");
             }
-            if!(email){
+            if(!email){
                return await util.handleReturn(isSlash, message, discordUser, "Please enter the email associated with your account.");
             }
 
