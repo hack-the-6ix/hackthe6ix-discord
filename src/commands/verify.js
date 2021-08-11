@@ -15,6 +15,7 @@ module.exports = {
     callback: async ({ args, text, message, member, channel, client }) => {
         let email = args[0] || args[args.length-1];
         email = email.trim();
+        email = email.replace(/[\u200B-\u200D\uFEFF]/g, '');
 
         const [userID, discordUser, isSlash] = await util.getCommandMetadata(member, message, channel);
 
