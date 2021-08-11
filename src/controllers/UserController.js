@@ -23,7 +23,7 @@ UserController.verifyUser = async function(email, discordID, discordUsername) {
     }
     catch(err) {
         if(err.response?.data?.status === 404) {
-            throw new PublicError("No unverified user found with the given email. If you previously verified, you can only reverify with the same Discord account. Contact an organizer for assistance if you're not sure what to do.");
+            throw new PublicError("No unverified user found with the given email. If you previously verified, you can only reverify with the same Discord account. If you are a hacker, you must be confirmed on https://dash.hackthe6ix.com before you can verify on Discord. Contact an organizer for assistance if you're not sure what to do.");
         }
         throw err;
     }
