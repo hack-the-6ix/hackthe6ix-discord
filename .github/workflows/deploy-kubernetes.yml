@@ -22,8 +22,6 @@ on:
         required: true
       KUBECONFIG_B64:
         required: true
-      MAILER_ROOT:
-        required: true
 
 jobs:
   deploy:
