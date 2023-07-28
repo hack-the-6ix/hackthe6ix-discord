@@ -69,4 +69,47 @@ Utils.handleCommandError = async ({error, message, command, info}, returnMessage
         return await Utils.handleReturn(false, message, message.member, returnMessage);
     }
 }
+
+Utils.processVerification = async (verifyData, discordUser, revert=false, unsetNickOnRevert=true) => {
+    try {
+        if(revert) {
+            await discordUser.roles.remove(process.env.VERIFIED_ROLE_ID, "Reverting user verification.");
+        }
+        else {
+            await discordUser.roles.add(process.env.VERIFIED_ROLE_ID, "Verified user.");
+        }
+    }
+    catch(ignored){
+        console.log(ignored);
+    }
+
+    for(const role of verifyData.roles){
+        try {
+            if(rolesMap[role]){
+                if(revert) {
+                    await discordUser.roles.remove(rolesMap[role], "Removing aux. roles on revert verify.");
+                }
+                else {
+                    await discordUser.roles.add(rolesMap[role], "Adding aux. roles on verify.");
+                }
+            }
+        }
+        catch(ignored){
+            //ignored
+        }
+
+    }
+
+    if(revert) {
+        await discordUser.setNickname(null, "Reverting Discord verification.")
+    }
+    else {
+        if(verifyData.suffix) {
+            await discordUser.setNickname(`${verifyData.firstName} (${verifyData.suffix})`, "Setting user info on verify.");
+        }
+        else {
+            await discordUser.setNickname(`${verifyData.firstName} ${verifyData.lastName}`, "Setting user info on verify.");
+        }
+    }
+}
 module.exports = Utils;

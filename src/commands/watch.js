@@ -2,13 +2,15 @@ const util = require('../util');
 
 const MeetingController = require('../controllers/MeetingController');
 const WatchController = require('../controllers/WatchController');
+const {CommandType} = require("wokcommands");
 
 module.exports = {
     guildOnly: true,
-    description: 'Start a watch for meeting stastics.',
+    description: 'Start a watch for meeting statistics.',
     minArgs: 1,
     expectedArgs: '<meetingid> <channelid>',
     category: 'Organizer',
+    type: CommandType.LEGACY,
     callback: async ({ args, text, message, member, channel, client }) => {
         const [meetingID, channelID] = args;
 
@@ -20,7 +22,7 @@ module.exports = {
                 let channel;
 
                 if(channelID) {
-                channel = discordUser.guild.channels.fetch(channelID);
+                    channel = discordUser.guild.channels.fetch(channelID);
                 }
                 else {
                     channel = discordUser.voice.channel;
@@ -42,8 +44,5 @@ module.exports = {
         else {
             return await util.handleReturn(isSlash, message, discordUser, "This command is only available to organizers.");
         }
-    },
-    error: async (data) => {
-        await handleCommandError(data);
     }
 }

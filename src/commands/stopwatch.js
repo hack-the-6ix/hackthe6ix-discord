@@ -1,6 +1,7 @@
 const util = require('../util');
 
 const WatchController = require('../controllers/WatchController');
+const {CommandType} = require("wokcommands");
 
 module.exports = {
     guildOnly: true,
@@ -8,6 +9,7 @@ module.exports = {
     minArgs: 0,
     expectedArgs: '<channelid>',
     category: 'Organizer',
+    type: CommandType.LEGACY,
     callback: async ({ args, text, message, member, channel, client }) => {
         const [channelID] = args;
 
@@ -41,8 +43,5 @@ module.exports = {
         else {
             return await util.handleReturn(isSlash, message, discordUser, "This command is only available to organizers.");
         }   
-    },
-    error: async (data) => {
-        await handleCommandError(data);
     }
 }

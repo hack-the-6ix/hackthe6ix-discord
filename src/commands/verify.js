@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const UserController = require('../controllers/UserController');
-const { handleCommandError } = require('../util');
 const util = require('../util');
+const {CommandType} = require("wokcommands");
 
 const rolesMap = JSON.parse(fs.readFileSync(path.join("data", "rolesmap.json")).toString())
 
@@ -12,6 +12,8 @@ module.exports = {
     minArgs: 1,
     expectedArgs: '<email>',
     category: 'Setup',
+    type: CommandType.BOTH,
+    deferReply: "ephemeral",
     callback: async ({ args, text, message, member, channel, client }) => {
         let email = args[0] || args[args.length-1];
         email = email.trim();
@@ -20,7 +22,7 @@ module.exports = {
         const [userID, discordUser, isSlash] = await util.getCommandMetadata(member, message, channel);
 
         try {
-            if(message.channel.id !== process.env.VERIFICATION_CHANNEL_ID){
+            if(!isSlash && message.channel.id !== process.env.VERIFICATION_CHANNEL_ID){
                 return await util.handleReturn(isSlash, message, discordUser, "You may only verify in the verification channel!");
             }
             if(discordUser.roles.cache.has(process.env.VERIFIED_ROLE_ID)){
@@ -30,33 +32,9 @@ module.exports = {
                return await util.handleReturn(isSlash, message, discordUser, "Please enter the email associated with your account.");
             }
 
-            const verifyData = await UserController.verifyUser(email, userID, `${discordUser.user.username}#${discordUser.user.discriminator}`);
-            
-            try {
-                await discordUser.roles.add(process.env.VERIFIED_ROLE_ID);
-            }
-            catch(ignored){
-                
-            }
+            const verifyData = await UserController.verifyUser(email, userID, discordUser.user.discriminator === "0" ? discordUser.user.username : `${discordUser.user.username}#${discordUser.user.discriminator}`);
 
-            for(const role of verifyData.roles){
-                try {
-                    if(rolesMap[role]){
-                        await discordUser.roles.add(rolesMap[role]);
-                    }
-                }
-                catch(ignored){
-                    //ignored
-                }                
-                
-            }
-
-            if(verifyData.suffix) {
-                await discordUser.setNickname(`${verifyData.firstName} (${verifyData.suffix})`);
-            }
-            else {
-                await discordUser.setNickname(`${verifyData.firstName} ${verifyData.lastName}`);
-            }
+            await util.processVerification(verifyData, discordUser);
 
             return await util.handleReturn(isSlash, message, discordUser, "Successfully verified!");
         }
@@ -64,8 +42,5 @@ module.exports = {
             console.log(e);
             return await util.handleReturn(isSlash, message, discordUser, e.publicMessage ?? 'There was an error verifying you. Please contact an organizer.');
         }
-    },
-    error: async (data) => {
-        await handleCommandError(data);
     }
 }
