@@ -1,0 +1,3 @@
+Hack the 6ix Discord bot successfully deployed.
+
+To make sure that legacy commands are supported, make sure you enable the Message Content privileged gateway intent.

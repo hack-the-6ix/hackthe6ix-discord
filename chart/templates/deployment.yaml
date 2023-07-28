@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hackthe6ix-discord.fullname" . }}
+  labels:
+    {{- include "hackthe6ix-discord.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "hackthe6ix-discord.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        kubernetes.hackthe6ix.com/app-revision: '{{ .Values.hackthe6ixDiscord.revision }}'
+        {{- if .Values.hackthe6ixDiscord.secrets.vault.enabled }}
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/tls-skip-verify: 'true'
+        vault.hashicorp.com/role: '{{ .Values.hackthe6ixDiscord.secrets.vault.role }}'
+        vault.hashicorp.com/agent-inject-secret-env-source: {{ .Values.hackthe6ixDiscord.secrets.vault.secretPath }}/env
+        vault.hashicorp.com/agent-inject-file-env-source: backendEnv.sh
+        vault.hashicorp.com/agent-inject-template-env-source: |
+          {{ "{{" }}- with secret "{{ .Values.hackthe6ixDiscord.secrets.vault.secretPath }}/env" -}}
+          {{ "{{" }} range $k, $v := .Data.data }}
+          export {{ "{{" }} $k }}={{ "{{" }} $v }}
+          {{ "{{" }} end }}
+          {{ "{{" }}- end }}
+        {{- end }}
+      labels:
+        {{- include "hackthe6ix-discord.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "hackthe6ix-discord.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if not .Values.hackthe6ixDiscord.secrets.vault.enabled }}
+          envFrom:
+            - secretRef:
+                name: {{ include "hackthe6ix-discord.fullname" . }}-secrets
+          {{- end }}
+          env:
+            - name: NODE_ENV
+              value: "{{ .Values.hackthe6ixDiscord.nodeEnv }}"
+            - name: API_HOST
+              value: "{{ .Values.hackthe6ixDiscord.backend.apiHost }}"
+            - name: COMMAND_PREFIX
+              value: "{{ .Values.hackthe6ixDiscord.commandPrefix }}"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

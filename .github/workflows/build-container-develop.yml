@@ -1,6 +1,8 @@
-name: Build and deploy container (Production)
+name: Build and deploy container (Staging)
 
 on:
+  push:
+    branches: [ master ]
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -18,7 +20,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-$latest
+          key: ${{ runner.os }}-buildx-$develop
           restore-keys: |
             ${{ runner.os }}-buildx-
 
@@ -36,19 +38,18 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           push: true
           tags: |
-            ${{ vars.REGISTRY_REPO_PATH }}:latest
+            ${{ vars.REGISTRY_REPO_PATH }}:develop
 
       # Clean up cache
       - name: Move cache
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
   deploy:
     uses: ./.github/workflows/deploy-kubernetes.yml
     needs: build
     with:
-      environment: production
-      values_file: production
-      release_name: production-bot
+      environment: staging
+      values_file: develop
+      release_name: staging-bot
     secrets: inherit

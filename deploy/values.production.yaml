@@ -1,0 +1,9 @@
+image:
+  pullPolicy: Always
+  tag: latest
+
+hackthe6ixDiscord:
+  nodeEnv: production
+  secrets:
+    vault:
+      enabled: true

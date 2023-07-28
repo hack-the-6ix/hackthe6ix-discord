@@ -1,0 +1,11 @@
+image:
+  pullPolicy: Always
+  tag: develop
+
+hackthe6ixDiscord:
+  nodeEnv: development
+  secrets:
+    vault:
+      enabled: true
+      role: hackthe6ix-discord-staging
+      secretPath: deploy/staging/discord
