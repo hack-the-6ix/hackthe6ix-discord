@@ -57,6 +57,10 @@ spec:
               value: "{{ .Values.hackthe6ixDiscord.backend.apiHost }}"
             - name: COMMAND_PREFIX
               value: "{{ .Values.hackthe6ixDiscord.commandPrefix }}"
+            {{- if .Values.hackthe6ixBackend.secrets.vault.enabled }}
+            - name: HT6_ENV_SOURCE
+              value: /vault/secrets/backendEnv.sh
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
