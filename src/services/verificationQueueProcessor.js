@@ -10,7 +10,6 @@ VerificationQueueProcessor.startProcessing = function(client) {
             const queueData = await QueueController.getNext();
             try {
                 if(queueData) {
-                    throw new Error();
                     console.log(`Processing verification ${queueData.id} for ${queueData.discordID} in guild ${queueData.guildID}.`)
                     const guild = await client.guilds.fetch(queueData.guildID);
                     const discordUser = await guild.members.fetch(queueData.discordID);

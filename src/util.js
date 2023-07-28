@@ -1,4 +1,17 @@
 const ADMIN_ROLES = process.env.ADMIN_ROLE_IDS.split(",");
+
+function setupRolesMap() {
+    const rolesData = process.env.DISCORD_ROLES_MAP.split(",");
+    const rolesMap = {};
+    for(let i=0;i<rolesData.length/2;++i) {
+        rolesMap[rolesData[i*2]] = rolesData[i*2 + 1];
+    }
+
+    return rolesMap;
+}
+
+const rolesMap = setupRolesMap();
+
 const Utils = {};
 
 Utils.createHeaders = () => {

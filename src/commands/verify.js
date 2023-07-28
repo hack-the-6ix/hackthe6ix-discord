@@ -4,8 +4,6 @@ const UserController = require('../controllers/UserController');
 const util = require('../util');
 const {CommandType} = require("wokcommands");
 
-const rolesMap = JSON.parse(fs.readFileSync(path.join("data", "rolesmap.json")).toString())
-
 module.exports = {
     guildOnly: true,
     description: 'Verify yourself and associate your Discord account with your Hack the 6ix account.',
