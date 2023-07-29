@@ -1,3 +1,4 @@
+const {PermissionsBitField} = require("discord.js");
 const ADMIN_ROLES = process.env.ADMIN_ROLE_IDS?.split(",") ?? [];
 
 function setupRolesMap() {
@@ -62,7 +63,7 @@ Utils.getCommandMetadata = async (member, message, channel) => {
 }
     
 Utils.isUserAdmin = (discordUser) => {
-    if(discordUser.hasPermission("ADMINISTRATOR")){
+    if(discordUser.permissions.has(PermissionsBitField.Flags.Administrator)){
         return true;
     }
 
