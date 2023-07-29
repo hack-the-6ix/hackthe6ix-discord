@@ -54,7 +54,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
     WatchController.handleEvent(oldMember, newMember);
  })
 
-client.on('message', (message) => {
+client.on('messageCreate', (message) => {
     if(message.channel.id === process.env.VERIFICATION_CHANNEL_ID){
         if(message.author.id === client.user.id){
             return;
