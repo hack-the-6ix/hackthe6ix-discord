@@ -114,16 +114,21 @@ Utils.processVerification = async (verifyData, discordUser, revert=false, unsetN
 
     }
 
-    if(revert) {
-        await discordUser.setNickname(null, "Reverting Discord verification.")
-    }
-    else {
-        if(verifyData.suffix) {
-            await discordUser.setNickname(`${verifyData.firstName} (${verifyData.suffix})`, "Setting user info on verify.");
+    try {
+        if(revert) {
+            await discordUser.setNickname(null, "Reverting Discord verification.")
         }
         else {
-            await discordUser.setNickname(`${verifyData.firstName} ${verifyData.lastName}`, "Setting user info on verify.");
+            if(verifyData.suffix) {
+                await discordUser.setNickname(`${verifyData.firstName} (${verifyData.suffix})`, "Setting user info on verify.");
+            }
+            else {
+                await discordUser.setNickname(`${verifyData.firstName} ${verifyData.lastName}`, "Setting user info on verify.");
+            }
         }
+    }
+    catch(e) {
+        console.error(`Encountered error setting nickname for ${discordUser.id}.`, e);
     }
 }
 module.exports = Utils;
