@@ -18,8 +18,14 @@ VerificationQueueProcessor.startProcessing = function(client) {
             }
             catch(e) {
                 console.error("Error while processing verification queue", e);
-                if(queueData) {
-                    await QueueController.requeue(queueData.id);
+                if(e.code === 10007) {
+                    console.error("Member is no longer in server. Skipping.")
+                }
+                else {
+                    // only requeue if the queue item is less an hour old
+                    if(queueData && queueData.queuedTime && Date.now() - queueData.queuedTime < 60 * 60 * 1000) {
+                        await QueueController.requeue(queueData.id);
+                    }
                 }
             }
         }
