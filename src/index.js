@@ -48,7 +48,7 @@ client.on('ready', async () => {
         defaultPrefix: process.env.COMMAND_PREFIX
     });
 
-    // verificationQueueProcessor.startProcessing(client);
+    verificationQueueProcessor.startProcessing(client);
 })
 
 client.on('voiceStateUpdate', (oldMember, newMember) => {
