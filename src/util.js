@@ -85,12 +85,14 @@ Utils.handleCommandError = async ({error, message, command, info}, returnMessage
 }
 
 Utils.processVerification = async (verifyData, discordUser, revert=false, unsetNickOnRevert=true) => {
+    console.log(`${discordUser.user.tag} verification processing.`);
     try {
         if(revert) {
             await discordUser.roles.remove(process.env.VERIFIED_ROLE_ID, "Reverting user verification.");
         }
         else {
             await discordUser.roles.add(process.env.VERIFIED_ROLE_ID, "Verified user.");
+            console.log(`${discordUser.user.tag} verified role given.`);
         }
     }
     catch(ignored){
@@ -105,6 +107,7 @@ Utils.processVerification = async (verifyData, discordUser, revert=false, unsetN
                 }
                 else {
                     await discordUser.roles.add(rolesMap[role], "Adding aux. roles on verify.");
+                    console.log(`${discordUser.user.tag} role ${rolesMap[role]} given.`);
                 }
             }
         }
@@ -124,6 +127,7 @@ Utils.processVerification = async (verifyData, discordUser, revert=false, unsetN
             }
             else {
                 await discordUser.setNickname(`${verifyData.firstName} ${verifyData.lastName}`, "Setting user info on verify.");
+                console.log(`${discordUser.user.tag} nickname changed to ${verifyData.firstName} ${verifyData.lastName}.`);
             }
         }
     }
