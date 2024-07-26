@@ -48,7 +48,7 @@ client.on('ready', async () => {
         defaultPrefix: process.env.COMMAND_PREFIX
     });
 
-    verificationQueueProcessor.startProcessing(client);
+    // verificationQueueProcessor.startProcessing(client);
 })
 
 client.on('voiceStateUpdate', (oldMember, newMember) => {
@@ -69,12 +69,27 @@ client.on('messageCreate', (message) => {
 })
 
 client.on('guildMemberAdd', async (member) => {
-    const userInfo = await UserController.getUserByDiscordID(member.id)
+
+    let userInfo
+    
+    try {
+        userInfo = await UserController.getUserByDiscordID(member.id)
+    } catch (e) {
+        console.log(e);
+    }
 
     if (userInfo) {
-        member.setNickname(userInfo.firstName + " " + userInfo.lastName);
+        try {
+            member.setNickname(userInfo.firstName + " " + userInfo.lastName);
+        } catch (e) {
+            console.log(e);
+        }
     } else {
-        console.log(`Discord user ${newMember.id} not linked`);
+        try {
+            console.log(`Discord user ${member.id} not linked`);
+        } catch (e) {
+            console.log(e);
+        }
     }
 })
 
