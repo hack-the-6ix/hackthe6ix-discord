@@ -6,8 +6,8 @@ const WOK = require('wokcommands');
 const util = require('./util');
 
 const WatchController = require('./controllers/WatchController');
+const UserController = require('./controllers/UserController');
 const verificationQueueProcessor = require('./services/verificationQueueProcessor');
-
 
 const client = new Client({
     intents: [
@@ -64,6 +64,16 @@ client.on('messageCreate', (message) => {
             return;
         }
         message.delete();
+    }
+})
+
+client.on('guildMemberAdd', async (member) => {
+    const userInfo = await UserController.getUserByDiscordID(member.id)
+
+    if (userInfo) {
+        member.setNickname(userInfo.firstName + " " + userInfo.lastName);
+    } else {
+        console.log(`Discord user ${newMember.id} not linked, ignoring voice state change.`);
     }
 })
 
