@@ -50,7 +50,7 @@ client.on('ready', async () => {
 
     console.log(`Logged in as ${client.user.tag}!`);
     
-    verificationQueueProcessor.startProcessing(client);
+    // verificationQueueProcessor.startProcessing(client);
 })
 
 client.on('voiceStateUpdate', (oldMember, newMember) => {
@@ -79,7 +79,7 @@ client.on('guildMemberAdd', async (member) => {
     try {
         userInfo = await UserController.getUserByDiscordID(member.id)
     } catch (e) {
-        console.log(e);
+        console.log(member.user.tag + " user not found");
     }
 
     if (userInfo) {
@@ -92,7 +92,7 @@ client.on('guildMemberAdd', async (member) => {
         }
     } else {
         try {
-            console.log(`Discord user ${member.id} not linked`);
+            console.log(`${member.user.tag} user not linked`);
         } catch (e) {
             console.log(e);
         }
