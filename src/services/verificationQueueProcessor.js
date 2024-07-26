@@ -17,7 +17,7 @@ VerificationQueueProcessor.startProcessing = function(client) {
                 }
             }
             catch(e) {
-                console.error("Error while processing verification queue", e);
+                console.error("Error while processing verification queue.");
                 if(e.code === 10007) {
                     console.error("Member is no longer in server. Skipping.")
                 }
@@ -30,7 +30,7 @@ VerificationQueueProcessor.startProcessing = function(client) {
             }
         }
         catch(e) {
-            console.error("Unable to fetch/update verification queue.", e);
+            console.error("Unable to fetch/update verification queue.");
         }
 
 

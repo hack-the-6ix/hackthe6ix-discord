@@ -48,12 +48,14 @@ client.on('ready', async () => {
         defaultPrefix: process.env.COMMAND_PREFIX
     });
 
+    console.log(`Logged in as ${client.user.tag}!`);
+    
     verificationQueueProcessor.startProcessing(client);
 })
 
 client.on('voiceStateUpdate', (oldMember, newMember) => {
     WatchController.handleEvent(oldMember, newMember);
- })
+})
 
 client.on('messageCreate', (message) => {
     if(message.channel.id === process.env.VERIFICATION_CHANNEL_ID){
@@ -71,6 +73,8 @@ client.on('messageCreate', (message) => {
 client.on('guildMemberAdd', async (member) => {
 
     let userInfo
+
+    console.log(member.user.tag + " joined the server");
     
     try {
         userInfo = await UserController.getUserByDiscordID(member.id)
@@ -79,8 +83,10 @@ client.on('guildMemberAdd', async (member) => {
     }
 
     if (userInfo) {
+        console.log(`${member.user.tag} is linked to ${userInfo.email}`);
         try {
             member.setNickname(userInfo.firstName + " " + userInfo.lastName);
+            console.log(`${member.user.tag} nickname set to ${userInfo.firstName} ${userInfo.lastName}`);
         } catch (e) {
             console.log(e);
         }
