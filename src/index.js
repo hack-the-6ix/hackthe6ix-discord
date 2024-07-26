@@ -73,7 +73,7 @@ client.on('guildMemberAdd', async (member) => {
     if (userInfo) {
         member.setNickname(userInfo.firstName + " " + userInfo.lastName);
     } else {
-        console.log(`Discord user ${newMember.id} not linked, ignoring voice state change.`);
+        console.log(`Discord user ${newMember.id} not linked`);
     }
 })
 
