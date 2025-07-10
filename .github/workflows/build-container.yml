@@ -1,9 +1,13 @@
-name: Build and deploy container (Staging)
+name: Build and deploy container (Production)
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -20,7 +24,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-$develop
+          key: ${{ runner.os }}-buildx-$latest
           restore-keys: |
             ${{ runner.os }}-buildx-
 
@@ -36,20 +40,35 @@ jobs:
         with:
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
           cache-from: type=local,src=/tmp/.buildx-cache
+          target: deploy
           push: true
           tags: |
-            ${{ vars.REGISTRY_REPO_PATH }}:develop
+            ${{ vars.REGISTRY_REPO_PATH }}:latest
+            ${{ vars.REGISTRY_REPO_PATH }}:${{ github.sha }}
 
       # Clean up cache
       - name: Move cache
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
   deploy:
-    uses: ./.github/workflows/deploy-kubernetes.yml
+    runs-on: ubuntu-latest
     needs: build
-    with:
-      environment: staging
-      values_file: develop
-      release_name: staging-bot
-    secrets: inherit
+    environment:
+      name: production
+      url: api.hackthe6ix.com
+    steps:
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CONTAINER_DEPLOY_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Deploy Container App
+        uses: azure/cli@v2
+        with:
+          azcliversion: 2.74.0
+          inlineScript: |
+            az containerapp update -o none -n ${{ vars.CONTAINER_APP_NAME }} -g ${{ vars.CONTAINER_APP_RESOURCE_GROUP }} \
+              --image ${{ vars.REGISTRY_REPO_PATH }}:${{ github.sha }}
