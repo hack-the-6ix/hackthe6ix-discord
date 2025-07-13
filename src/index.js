@@ -54,7 +54,7 @@ client.on("ready", async () => {
     status: "online"
   });
 
-  // verificationQueueProcessor.startProcessing(client);
+  verificationQueueProcessor.startProcessing(client);
 });
 
 client.on("voiceStateUpdate", (oldMember, newMember) => {
